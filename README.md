@@ -38,6 +38,10 @@ RAZORPAY_KEY_ID=your_key_id
 RAZORPAY_KEY_SECRET=your_key_secret
 ```
 
+## Database Setup
+
+This app uses Prisma with a PostgreSQL database in production. Set `DATABASE_URL` to your Postgres connection string in Vercel or local `.env`.
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.

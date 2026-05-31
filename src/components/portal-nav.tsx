@@ -13,11 +13,7 @@ const pages = [
   { href: "/reports", label: "Reports" },
 ];
 
-type PortalNavProps = {
-  isAuthenticated?: boolean;
-};
-
-export function PortalNav({ isAuthenticated }: PortalNavProps) {
+export function PortalNav() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -43,22 +39,20 @@ export function PortalNav({ isAuthenticated }: PortalNavProps) {
               </Link>
             ))}
 
-            {isAuthenticated ? (
-              <button
-                type="button"
-                onClick={() => signOut({ callbackUrl: "/auth/login" })}
-                className="whitespace-nowrap rounded-full bg-slate-950 px-3 py-1.5 font-medium text-white transition hover:bg-slate-800"
-              >
-                Logout
-              </button>
-            ) : (
-              <Link
-                href="/auth/login"
-                className="whitespace-nowrap rounded-full px-3 py-1.5 transition hover:bg-slate-100 hover:text-slate-950"
-              >
-                Login
-              </Link>
-            )}
+            <Link
+              href="/auth/login"
+              className="whitespace-nowrap rounded-full px-3 py-1.5 transition hover:bg-slate-100 hover:text-slate-950"
+            >
+              Login
+            </Link>
+
+            <button
+              type="button"
+              onClick={() => signOut({ callbackUrl: "/auth/login" })}
+              className="whitespace-nowrap rounded-full bg-slate-950 px-3 py-1.5 font-medium text-white transition hover:bg-slate-800"
+            >
+              Logout
+            </button>
           </div>
 
           <div className="relative sm:hidden">
@@ -87,26 +81,24 @@ export function PortalNav({ isAuthenticated }: PortalNavProps) {
 
                 <div className="my-2 border-t border-slate-200" />
 
-                {isAuthenticated ? (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMenuOpen(false);
-                      signOut({ callbackUrl: "/auth/login" });
-                    }}
-                    className="block w-full rounded-2xl bg-slate-950 px-4 py-3 text-left text-sm font-medium text-white transition hover:bg-slate-800"
-                  >
-                    Logout
-                  </button>
-                ) : (
-                  <Link
-                    href="/auth/login"
-                    onClick={() => setMenuOpen(false)}
-                    className="block rounded-2xl px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-950"
-                  >
-                    Login
-                  </Link>
-                )}
+                <Link
+                  href="/auth/login"
+                  onClick={() => setMenuOpen(false)}
+                  className="block rounded-2xl px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-950"
+                >
+                  Login
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    signOut({ callbackUrl: "/auth/login" });
+                  }}
+                  className="mt-1 block w-full rounded-2xl bg-slate-950 px-4 py-3 text-left text-sm font-medium text-white transition hover:bg-slate-800"
+                >
+                  Logout
+                </button>
               </div>
             ) : null}
           </div>

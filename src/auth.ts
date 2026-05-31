@@ -65,3 +65,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
 });
+
+export async function safeAuth() {
+  try {
+    return await auth();
+  } catch {
+    return null;
+  }
+}

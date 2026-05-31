@@ -6,10 +6,6 @@ const demoAdminEmail = "admin@mindhatch.local";
 const demoAdminPassword = "admin1234";
 
 export async function ensureDemoAuthUser() {
-  if (process.env.NODE_ENV !== "development") {
-    return null;
-  }
-
   try {
     const existingUser = await prisma.user.findUnique({ where: { email: demoAdminEmail } });
 
