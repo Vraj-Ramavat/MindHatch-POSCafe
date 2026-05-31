@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { LoginForm } from "@/components/login-form";
+import { safeAuth } from "@/auth";
 import { ensureDemoAuthUser } from "@/lib/demo-data";
 
 export const dynamic = "force-dynamic";
@@ -11,7 +13,12 @@ export default async function LoginPage({
   searchParams: Promise<{ callbackUrl?: string }>;
 }) {
   await ensureDemoAuthUser();
+  const session = await safeAuth();
   const { callbackUrl } = await searchParams;
+
+  if (session?.user) {
+    redirect(callbackUrl ?? "/terminal");
+  }
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-col gap-4 px-6 py-6">
