@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 
@@ -21,21 +20,40 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
     setIsSubmitting(true);
     setError(null);
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-      callbackUrl,
+    const csrfResponse = await fetch("/api/auth/csrf");
+    const csrfPayload = (await csrfResponse.json()) as { csrfToken?: string };
+
+    if (!csrfResponse.ok || !csrfPayload.csrfToken) {
+      setIsSubmitting(false);
+      setError("Unable to start sign in.");
+      return;
+    }
+
+    const response = await fetch("/api/auth/callback/credentials", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-Auth-Return-Redirect": "1",
+      },
+      body: new URLSearchParams({
+        csrfToken: csrfPayload.csrfToken,
+        email,
+        password,
+        callbackUrl,
+        json: "true",
+      }),
     });
+
+    const payload = (await response.json()) as { url?: string };
 
     setIsSubmitting(false);
 
-    if (result?.error) {
+    if (!response.ok || !payload.url) {
       setError("Invalid email or password.");
       return;
     }
 
-    router.push(result?.url ?? callbackUrl);
+    router.push(payload.url);
   }
 
   return (
