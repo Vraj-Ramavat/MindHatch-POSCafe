@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { formatCurrency } from "../../lib/formatCurrency";
 
 type Product = {
   id: string;
@@ -547,7 +548,7 @@ export default function TerminalPage() {
             </div>
             <div className="rounded-2xl bg-cyan-500 px-4 py-3 text-slate-950">
               <div className="text-xs uppercase tracking-[0.2em] text-cyan-950/70">Total</div>
-              <div className="mt-1 text-2xl font-semibold">${total.toFixed(2)}</div>
+              <div className="mt-1 text-2xl font-semibold">{formatCurrency(total)}</div>
             </div>
             <div className="rounded-2xl bg-amber-100 px-4 py-3 text-amber-950">
               <div className="text-xs uppercase tracking-[0.2em] text-amber-900/70">Cart items</div>
@@ -650,7 +651,7 @@ export default function TerminalPage() {
                 <div key={item.productId} className="flex items-center justify-between px-4 py-4">
                   <div>
                     <div className="font-medium text-slate-950">{item.name}</div>
-                    <div className="text-sm text-slate-500">${item.unitPrice.toFixed(2)} each</div>
+                      <div className="text-sm text-slate-500">{formatCurrency(item.unitPrice)} each</div>
                   </div>
                   <div className="flex items-center gap-3">
                     <button onClick={() => changeQuantity(item.productId, -1)} className="h-8 w-8 rounded-full border border-slate-200 text-lg text-slate-600">
@@ -660,7 +661,7 @@ export default function TerminalPage() {
                     <button onClick={() => changeQuantity(item.productId, 1)} className="h-8 w-8 rounded-full border border-slate-200 text-lg text-slate-600">
                       +
                     </button>
-                    <span className="w-20 text-right text-slate-700">${(item.quantity * item.unitPrice).toFixed(2)}</span>
+                    <span className="w-20 text-right text-slate-700">{formatCurrency(item.quantity * item.unitPrice)}</span>
                   </div>
                 </div>
               ))
@@ -669,7 +670,7 @@ export default function TerminalPage() {
 
           <div className="mt-4 flex items-center justify-between rounded-2xl bg-slate-950 px-4 py-4 text-white">
             <span className="text-sm uppercase tracking-[0.18em] text-slate-400">Checkout total</span>
-            <span className="text-2xl font-semibold">${total.toFixed(2)}</span>
+            <span className="text-2xl font-semibold">{formatCurrency(total)}</span>
           </div>
 
           <button
@@ -709,7 +710,7 @@ export default function TerminalPage() {
                         <span className="rounded-full bg-white px-2 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
                           {product.isKitchenItem ? "Kitchen" : "Bar"}
                         </span>
-                        <span className="font-semibold text-slate-950">${product.price.toFixed(2)}</span>
+                        <span className="font-semibold text-slate-950">{formatCurrency(product.price)}</span>
                       </div>
                     </button>
                   ))}
@@ -830,7 +831,7 @@ export default function TerminalPage() {
                       <div className="font-medium text-slate-950">{item.name}</div>
                       <div className="text-slate-500">Qty {item.quantity}</div>
                     </div>
-                    <div className="font-semibold text-slate-950">${(item.quantity * item.unitPrice).toFixed(2)}</div>
+                    <div className="font-semibold text-slate-950">{formatCurrency(item.quantity * item.unitPrice)}</div>
                   </div>
                 ))}
               </div>
@@ -838,7 +839,7 @@ export default function TerminalPage() {
 
             <div className="mt-4 flex items-center justify-between rounded-3xl bg-slate-950 px-4 py-4 text-white">
               <span className="text-sm uppercase tracking-[0.18em] text-slate-400">Total</span>
-              <span className="text-2xl font-semibold">${receiptOrder.total.toFixed(2)}</span>
+              <span className="text-2xl font-semibold">{formatCurrency(receiptOrder.total)}</span>
             </div>
 
             <button

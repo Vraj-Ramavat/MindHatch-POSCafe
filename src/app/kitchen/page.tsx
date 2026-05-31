@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { formatCurrency } from "../../lib/formatCurrency";
 
 type TicketItem = {
   id: string;
@@ -285,7 +286,7 @@ export default function KitchenPage() {
                         <button onClick={() => void advanceOrder(ticket)} className="flex-1 text-left">
                           <div className="text-xl font-semibold text-slate-950">{ticket.orderNumber}</div>
                           <div className="mt-1 text-sm text-slate-600">
-                            Table {ticket.tableNumber ?? "Walk-in"} · {ticket.paymentStatus} · ${ticket.total.toFixed(2)}
+                            Table {ticket.tableNumber ?? "Walk-in"} · {ticket.paymentStatus} · {formatCurrency(ticket.total)}
                           </div>
                         </button>
                         <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
@@ -332,7 +333,7 @@ export default function KitchenPage() {
                       <button onClick={() => void advanceOrder(ticket)} className="flex-1 text-left">
                         <div className="text-xl font-semibold text-slate-950">{ticket.orderNumber}</div>
                         <div className="mt-1 text-sm text-slate-600">
-                          Table {ticket.tableNumber ?? "Walk-in"} · {ticket.paymentStatus} · ${ticket.total.toFixed(2)}
+                          Table {ticket.tableNumber ?? "Walk-in"} · {ticket.paymentStatus} · {formatCurrency(ticket.total)}
                         </div>
                       </button>
                       <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { formatCurrency } from "../../lib/formatCurrency";
 
 type CustomerItem = {
   id: string;
@@ -140,7 +141,7 @@ export default function CustomerPage() {
               <h2 className="text-xl font-semibold text-slate-950 sm:text-2xl">Live table view</h2>
               <p className="text-sm text-slate-500">
                 Table {selectedTable.tableNumber} · Payment: {activeOrder?.paymentMethod ?? "Pending"}
-                {activeOrder ? ` · Total: $${activeOrder.total.toFixed(2)}` : ""}
+                {activeOrder ? ` · Total: ${formatCurrency(activeOrder.total)}` : ""}
               </p>
             </div>
             <div className="rounded-full bg-slate-950 px-3 py-2 text-xs font-semibold text-white sm:px-4 sm:text-sm">

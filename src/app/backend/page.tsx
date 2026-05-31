@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { formatCurrency } from "../../lib/formatCurrency";
 import type { FormEvent } from "react";
 
 type Product = {
@@ -497,7 +498,7 @@ export default function BackendPage() {
                     <div className="mt-3 flex flex-wrap items-center gap-2">
                       <button type="button" onClick={() => void updateProduct(product.id)} className="h-11 rounded-2xl bg-slate-950 px-4 text-sm font-semibold text-white">Save</button>
                       <button type="button" onClick={() => void deleteProduct(product.id)} className="h-11 rounded-2xl border border-rose-200 px-4 text-sm font-semibold text-rose-700">Delete</button>
-                      <div className="ml-auto text-sm text-slate-500">{product.categoryName} · {product.isKitchenItem ? "Kitchen" : "Bar"} · ${product.price.toFixed(2)}</div>
+                      <div className="ml-auto text-sm text-slate-500">{product.categoryName} · {product.isKitchenItem ? "Kitchen" : "Bar"} · {formatCurrency(product.price)}</div>
                     </div>
                   </div>
                 );
@@ -609,7 +610,7 @@ export default function BackendPage() {
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <div className="font-semibold text-slate-950">{session.terminalName}</div>
-                      <div className="text-sm text-slate-500">{session.status} · ${session.closingSaleAmount.toFixed(2)}</div>
+                      <div className="text-sm text-slate-500">{session.status} · {formatCurrency(session.closingSaleAmount)}</div>
                     </div>
                     <div className="text-right text-sm text-slate-700">{new Date(session.openedAt).toLocaleDateString()}</div>
                   </div>
