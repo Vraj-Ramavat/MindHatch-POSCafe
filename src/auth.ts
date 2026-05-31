@@ -2,6 +2,10 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { Role } from "@/generated/prisma/client";
+
+const demoAdminEmail = "admin@mindhatch.local";
+const demoAdminPassword = "admin1234";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
@@ -26,6 +30,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
 
         const user = await prisma.user.findUnique({ where: { email } });
+
+        if (!user && email === demoAdminEmail && password === demoAdminPassword) {
+          const passwordHash = await bcrypt.hash(demoAdminPassword, 12);
+
+          const createdUser = await prisma.user.create({
+            data: {
+              name: "MindHatch Admin",
+              email: demoAdminEmail,
+              passwordHash,
+              role: Role.ADMIN,
+            },
+          });
+
+          return {
+            id: createdUser.id,
+            name: createdUser.name,
+            email: createdUser.email,
+            role: createdUser.role,
+          };
+        }
 
         if (!user) {
           return null;
