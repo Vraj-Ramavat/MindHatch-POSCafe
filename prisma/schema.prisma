@@ -1,0 +1,168 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  CASHIER
+  KITCHEN
+}
+
+enum SessionStatus {
+  OPEN
+  CLOSED
+}
+
+enum TableStatus {
+  AVAILABLE
+  OCCUPIED
+  RESERVED
+}
+
+enum OrderSource {
+  MANUAL
+  SELF
+}
+
+enum OrderStage {
+  TO_COOK
+  PREPARING
+  COMPLETED
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  UPI
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+}
+
+model User {
+  id                String            @id @default(cuid())
+  name              String
+  email             String            @unique
+  passwordHash      String
+  role              Role              @default(CASHIER)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  openedSessions    TerminalSession[]  @relation("OpenedSessions")
+  closedSessions    TerminalSession[]  @relation("ClosedSessions")
+  responsibleOrders Order[]           @relation("ResponsibleOrders")
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  products  Product[]
+  createdAt DateTime  @default(now())
+}
+
+model Product {
+  id           String          @id @default(cuid())
+  name         String
+  categoryId   String
+  category     Category        @relation(fields: [categoryId], references: [id])
+  price        Decimal
+  unit         String
+  tax          Decimal?
+  description  String?
+  isKitchenItem Boolean         @default(true)
+  active       Boolean         @default(true)
+  variants     ProductVariant[]
+  orderItems   OrderItem[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+model ProductVariant {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  attribute   String
+  value       String
+  extraPrice  Decimal  @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model Floor {
+  id        String   @id @default(cuid())
+  name      String
+  tables    Table[]
+  createdAt DateTime @default(now())
+}
+
+model Table {
+  id                  String    @id @default(cuid())
+  floorId             String
+  floor               Floor     @relation(fields: [floorId], references: [id], onDelete: Cascade)
+  tableNumber         String
+  seats               Int
+  active              Boolean   @default(true)
+  appointmentResource String?
+  status              TableStatus @default(AVAILABLE)
+  orders              Order[]
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+}
+
+model TerminalSession {
+  id               String        @id @default(cuid())
+  terminalName     String
+  status           SessionStatus @default(OPEN)
+  openingSaleAmount Decimal      @default(0)
+  closingSaleAmount Decimal      @default(0)
+  openedAt         DateTime      @default(now())
+  closedAt         DateTime?
+  openedById       String
+  openedBy         User          @relation("OpenedSessions", fields: [openedById], references: [id])
+  closedById       String?
+  closedBy         User?         @relation("ClosedSessions", fields: [closedById], references: [id])
+  orders           Order[]
+}
+
+model Order {
+  id             String        @id @default(cuid())
+  orderNumber    String        @unique
+  source         OrderSource   @default(MANUAL)
+  stage          OrderStage    @default(TO_COOK)
+  paymentMethod  PaymentMethod?
+  paymentStatus  PaymentStatus @default(PENDING)
+  total          Decimal       @default(0)
+  tableId        String?
+  table          Table?        @relation(fields: [tableId], references: [id], onDelete: SetNull)
+  sessionId      String
+  session        TerminalSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  responsibleId  String?
+  responsible    User?         @relation("ResponsibleOrders", fields: [responsibleId], references: [id], onDelete: SetNull)
+  customerToken  String?
+  upiId          String?
+  qrPayload      String?
+  qrConfirmed    Boolean       @default(false)
+  items          OrderItem[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String?
+  product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  name        String
+  quantity    Int
+  unitPrice   Decimal
+  kitchenStage OrderStage @default(TO_COOK)
+  prepared    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
