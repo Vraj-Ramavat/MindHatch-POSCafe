@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 
 type LoginFormProps = {
@@ -9,7 +8,6 @@ type LoginFormProps = {
 };
 
 export function LoginForm({ callbackUrl }: LoginFormProps) {
-  const router = useRouter();
   const [email, setEmail] = useState("admin@mindhatch.local");
   const [password, setPassword] = useState("admin1234");
   const [error, setError] = useState<string | null>(null);
@@ -53,7 +51,7 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
       return;
     }
 
-    router.push(payload.url);
+    window.location.assign(payload.url);
   }
 
   return (

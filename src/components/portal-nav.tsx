@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 
 const pages = [
@@ -15,6 +15,8 @@ const pages = [
 
 export function PortalNav() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { status } = useSession();
+  const isAuthenticated = status === "authenticated";
 
   return (
     <header className="sticky top-0 z-20 border-b border-slate-200/70 bg-white/80 backdrop-blur">
@@ -39,20 +41,22 @@ export function PortalNav() {
               </Link>
             ))}
 
-            <Link
-              href="/auth/login"
-              className="whitespace-nowrap rounded-full px-3 py-1.5 transition hover:bg-slate-100 hover:text-slate-950"
-            >
-              Login
-            </Link>
-
-            <button
-              type="button"
-              onClick={() => signOut({ callbackUrl: "/auth/login" })}
-              className="whitespace-nowrap rounded-full bg-slate-950 px-3 py-1.5 font-medium text-white transition hover:bg-slate-800"
-            >
-              Logout
-            </button>
+            {isAuthenticated ? (
+              <button
+                type="button"
+                onClick={() => signOut({ callbackUrl: "/auth/login" })}
+                className="whitespace-nowrap rounded-full bg-slate-950 px-3 py-1.5 font-medium text-white transition hover:bg-slate-800"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                href="/auth/login"
+                className="whitespace-nowrap rounded-full px-3 py-1.5 transition hover:bg-slate-100 hover:text-slate-950"
+              >
+                Login
+              </Link>
+            )}
           </div>
 
           <div className="relative sm:hidden">
@@ -81,24 +85,26 @@ export function PortalNav() {
 
                 <div className="my-2 border-t border-slate-200" />
 
-                <Link
-                  href="/auth/login"
-                  onClick={() => setMenuOpen(false)}
-                  className="block rounded-2xl px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-950"
-                >
-                  Login
-                </Link>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMenuOpen(false);
-                    signOut({ callbackUrl: "/auth/login" });
-                  }}
-                  className="mt-1 block w-full rounded-2xl bg-slate-950 px-4 py-3 text-left text-sm font-medium text-white transition hover:bg-slate-800"
-                >
-                  Logout
-                </button>
+                {isAuthenticated ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMenuOpen(false);
+                      signOut({ callbackUrl: "/auth/login" });
+                    }}
+                    className="mt-1 block w-full rounded-2xl bg-slate-950 px-4 py-3 text-left text-sm font-medium text-white transition hover:bg-slate-800"
+                  >
+                    Logout
+                  </button>
+                ) : (
+                  <Link
+                    href="/auth/login"
+                    onClick={() => setMenuOpen(false)}
+                    className="block rounded-2xl px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-950"
+                  >
+                    Login
+                  </Link>
+                )}
               </div>
             ) : null}
           </div>

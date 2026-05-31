@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { PortalNav } from "@/components/portal-nav";
+import { Providers } from "@/components/providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,8 +35,10 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-[#eef2ff] text-slate-950">
-        <PortalNav />
-        {children}
+        <Providers>
+          <PortalNav />
+          {children}
+        </Providers>
       </body>
     </html>
   );
