@@ -51,6 +51,12 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
       return;
     }
 
+    const sessionResponse = await fetch("/api/auth/session");
+    const sessionPayload = (await sessionResponse.json()) as { user?: { role?: string } };
+    const role = sessionPayload.user?.role ?? "CASHIER";
+    document.cookie = `mindhatch-auth=1; path=/; max-age=604800; samesite=lax`;
+    document.cookie = `mindhatch-role=${encodeURIComponent(role)}; path=/; max-age=604800; samesite=lax`;
+
     window.location.assign(payload.url);
   }
 

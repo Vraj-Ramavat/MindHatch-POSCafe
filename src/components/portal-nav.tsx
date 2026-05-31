@@ -18,6 +18,12 @@ export function PortalNav() {
   const { status } = useSession();
   const isAuthenticated = status === "authenticated";
 
+  function handleLogout() {
+    document.cookie = "mindhatch-auth=; path=/; max-age=0; samesite=lax";
+    document.cookie = "mindhatch-role=; path=/; max-age=0; samesite=lax";
+    signOut({ callbackUrl: "/auth/login" });
+  }
+
   return (
     <header className="sticky top-0 z-20 border-b border-slate-200/70 bg-white/80 backdrop-blur">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-8 lg:px-10">
@@ -44,7 +50,7 @@ export function PortalNav() {
             {isAuthenticated ? (
               <button
                 type="button"
-                onClick={() => signOut({ callbackUrl: "/auth/login" })}
+                onClick={handleLogout}
                 className="whitespace-nowrap rounded-full bg-slate-950 px-3 py-1.5 font-medium text-white transition hover:bg-slate-800"
               >
                 Logout
@@ -90,7 +96,7 @@ export function PortalNav() {
                     type="button"
                     onClick={() => {
                       setMenuOpen(false);
-                      signOut({ callbackUrl: "/auth/login" });
+                      handleLogout();
                     }}
                     className="mt-1 block w-full rounded-2xl bg-slate-950 px-4 py-3 text-left text-sm font-medium text-white transition hover:bg-slate-800"
                   >

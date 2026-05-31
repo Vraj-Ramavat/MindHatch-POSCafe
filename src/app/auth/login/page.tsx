@@ -1,7 +1,7 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { LoginForm } from "@/components/login-form";
-import { safeAuth } from "@/auth";
 import { ensureDemoAuthUser } from "@/lib/demo-data";
 
 export const dynamic = "force-dynamic";
@@ -13,10 +13,10 @@ export default async function LoginPage({
   searchParams: Promise<{ callbackUrl?: string }>;
 }) {
   await ensureDemoAuthUser();
-  const session = await safeAuth();
+  const requestCookies = await cookies();
   const { callbackUrl } = await searchParams;
 
-  if (session?.user) {
+  if (requestCookies.get("mindhatch-auth")?.value === "1") {
     redirect(callbackUrl ?? "/terminal");
   }
 

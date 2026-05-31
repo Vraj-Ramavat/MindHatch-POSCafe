@@ -1,4 +1,3 @@
-import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
 const protectedPaths = ["/terminal", "/kitchen", "/reports", "/backend"];
@@ -11,18 +10,15 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const token = await getToken({
-    req: request,
-    secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
-  });
+  const isAuthenticated = request.cookies.get("mindhatch-auth")?.value === "1";
 
-  if (!token) {
+  if (!isAuthenticated) {
     const loginUrl = new URL("/auth/login", request.nextUrl);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  const role = String(token.role ?? "");
+  const role = request.cookies.get("mindhatch-role")?.value ?? "";
 
   if (pathname.startsWith("/kitchen") && !["ADMIN", "MANAGER", "KITCHEN"].includes(role)) {
     return NextResponse.redirect(new URL("/unauthorized", request.nextUrl));
